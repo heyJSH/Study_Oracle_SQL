@@ -1,0 +1,82 @@
+/*
+<Ch2_DDL 생성 연습>
+
+[SQL Developer 새파일 생성]
+파일 - 새로 만들기 - 데이터베이스 파일 - 파일명 : 'ora_user.sql' - 디렉토리 설정: 찾기 쉽도록(D:\work)
+*/
+
+-- 문자 데이터 타입1_(52p), 'prac2_1'
+Create Table prac2_1(
+    column1 char(10),
+    column2 varchar2(10),
+    column3 nvarchar2(10),
+    column4 number
+);
+
+Insert into prac2_1(column1, column2)
+Values('cde', 'cde');
+
+Select
+    column1, length(column1) as len1,
+    column2, length(column2) as len2
+From prac2_1;
+
+//===============================================
+
+-- 문자 데이터 타입2_(53p), 'prac2_2'
+Create Table prac2_2(
+    column1 varchar2(3),
+    column2 varchar2(3 byte),
+    column3 varchar2(3 char)
+);
+
+    Insert into prac2_2
+    Values('abc', 'abc', 'abc');
+    
+    Select
+        column1, Length(column1) As len1,
+        column2, Length(column2) As len2,
+        column3, Length(column3) As len3
+    From prac2_2;
+
+-- 문자 데이터 타입3_(54p), 'prac2_2'
+/*
+    Insert into prac2_2
+    Values('홍길동', '홍길동', '홍길동');
+        //홍길동 = 9byte이므로, 컬컴3(3char)만 가능 (∵char : 고정길이 문자)
+*/
+    Insert into prac2_2(column3)
+        Values('홍길동');
+        
+    Select column3,
+        Length(column3) As len3,     //Length  : 컬럼 길이를 반환(3char = 3byte)
+        LengthB(column3) As bytelen  //LengthB : 해당 컬럼의 byte 수를 반환(3한글 = 9byte)
+    From ex2_2;
+
+//===============================================
+
+-- 숫자 데이터 타입(55p)
+Create Table prac2_3(
+    col_int Integer,    //Integer : 정수
+    col_dec Decimal,    //Decimal : 10진수, 오라클에선 둘 다 Number에 해당함
+    col_num number 
+);
+
+    Select column_id, column_name, data_type, data_length
+        From user_tab_cols
+        // 'user_tab_cols' : 사용자 계정을 생성하며 자동으로 만들어진 정보 저장 data
+        Where table_name = 'PRAC2_3'
+        Order by column_id;
+
+//===============================================
+
+-- 날짜 데이터 타입(58p)
+Create Table prac2_5(
+    col_date date,
+    col_timestamp timestamp
+);
+
+    Insert into prac2_5
+        Values(sysdate, systimestamp);
+        
+    Select * From prac2_5;

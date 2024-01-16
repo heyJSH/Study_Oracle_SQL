@@ -1,0 +1,200 @@
+[1일차] - 1장 ==================================
+** 환경설정
+오라클 설치
+sqldeveloper 설치
+
+[2일차] - 1장 ==================================
+SQL (Structured Query Language) : 구조화된 질의 언어
+ - DDL (Data Definition Language) 데이터 정의 언어
+  CREATE 생성
+  DROP 객체 삭제
+  ALTER 수정
+  TRUNCATE 테이블 데이터 삭제
+
+ - DML (Data Manipulation Language) 데이터 조작 언어
+  SELECT 조회
+  INSERT 삽입(생성)
+  UPDATE 수정
+  DELETE 삭제
+  COMMIT 적용(작업확정)
+  ROLLBACK 복원(이전상태) 
+
+[3일차] - 2장 ==================================
+데이터 베이스 객체: 논리적 저장 구조
+ - 테이블, 뷰, 인덱스, 시노님, 시퀀스, 파티션 테이블 ... 제약조건
+
+*** 테이블 생성
+CREATE TABLE 테이블명(
+	컬럼	데이터타입(크기)	제약사항,
+	컬럼	데이터타입	제약사항
+);
+
+*** 테이블 삭제
+DROP TALBE 테이블명;
+
+***** DML 관련
+- 데이터 삽입
+INSERT INTO 테이블명(컬럼1, 컬럼2, ...) 
+VALUES (값1, 값2, ...);
+
+- 데이터 조회
+SELECT	컬럼명 
+FROM	테이블명
+WHERE	조건
+ORDER BY 컬럼명;
+
+**** 데이터 타입
+문자 - VARCHAR2, CHAR
+숫자 - NUMBER
+날짜 - DATE
+LOB - BLOB
+
+* 데이터 크기 지정
+ - 입력하고자하는 데이터의 크기를 고려
+ - 한글 1글자 = 3BYTE
+
+LENGTH() - 길이 반환
+LENGTHB() - byte 단위로 길이 반환
+
+NUMBER(p, s)
+p : 유효 숫자 개수 (표현되는 숫자 개수)
+s : 표현되는 소수점 자리수 (s+1 소수점 자리수에서 반올림)
+
+* 오라클 시스템 테이블
+ - USER_TAB_COLUMNS : 테이블의 열(COLUMN) 정보
+  (COLUMN_NAME / DATA_TYPE / NULLABLE 등)
+ - USER_CONSTRAINTS : 제약조건 정보
+ - USER_INDEXS : 인덱스 정보
+
+[4일차] - 2장 ==================================
+
+*** SYSDATE : 시스템 날짜를 가져와서 사용 (년월일 시분초)
+
+**** 제약조건
+ - 오라클 객체의 하나로 컬럼에 대한 속성 지정
+
+NULL / NOT NULL : 해당 컬럼에 데이터 값 포함 여부
+UNIQUE :	한 테이블 내 중복된 값 없음
+PRIMARY KEY : 기본키, (NOT NULL + UNIQUE), 테이블 당 1개만 가짐
+FOREIGN KEY : 외래키, 다른(참조) 테이블의 기본키를 가져와 사용하는 경우
+CHECK : 특정 데이터만 입력
+
+CREATE TABLE 테이블명(
+	컬럼1	데이터타입	NOT NULL,
+	컬럼2	데이터타입	UNIQUE,
+	컬럼3	데이터타입	PRIMARY KEY,
+	컬럼4	데이터타입	DEFAULT 0,
+	컬럼5	데이터타입,
+	CONSTRAINTS	제약조건명	제약조건(컬럼명),
+	CONSTRAINTS	U_테이블명_컬럼명	UNIQUE(컬럼5)
+);
+
+컬럼 속성
+DEFAULT => 기본값
+
+ALTER TABLE 테이블명
+**** 테이블 변경(수정)
+1. 컬럼명 변경
+ALTER TABLE 테이블명 RENAME COLUMN 변경전컬럼명 TO 변경후컬럼명;
+2. 컬럼 타입 변경
+ALTER TABLE 테이블명 MODIFY 컬럼명 데이터타입;
+3. 컬럼 추가
+ALTER TABLE 테이블명 ADD 컬럼명 데이터타입;
+4. 컬럼 삭제
+ALTER TABLE 테이블명 DROP COLUMN 컬럼명;
+5. 제약조건 추가
+ALTER TABLE 테이블명 ADD CONSTRAINTS 제약조건명 제약조건(컬럼명);
+6. 제약조건 삭제
+ALTER TABLE 테이블명 DROP CONSTRAINTS 제약조건명;
+
+*** 테이블 복사
+CREATE TABLE 테이블명 AS
+SELECT	컬럼1, 컬럼2, ....
+FROM	테이블명;
+
+* 뷰 : 하나이상의 테이블이나 다른 뷰의 데이터를 볼수있는 객체
+
+- 뷰 생성
+CREATE OR REPLACE VIEW 뷰명 AS
+SELECT 문장;
+
+- 뷰 삭제
+DROP VIEW 뷰명;
+
+[5일차] - 2장 ==================================
+
+** 인덱스
+- 사용목적: 테이블 검색 성능(속도) 향상
+- 구문
+CREATE INDEX 인덱스명
+ON 테이블명(컬럼명);
+
+DROP INDEX 인덱스명;
+
+UNIQUE 인덱스 : 컬럼 값들이 유일한 경우 만드는 인덱스
+NON-UNIQUE 인덱스 : 컬럼 값에 중복된 값이 있는 경우 만드는 인덱스
+
+* 시노님
+ : 디비 객체의 별칭, 동의어
+- 구문
+CREATE [PUBLIC] SYNONYM 시노님명
+FOR 객체;
+
+DROP [PUBLIC] SYNONYM 시노님명;
+
+- COUNT(컬럼명) : 행개수 확인
+
+**** 시퀀스
+ : 자동으로 순번을 반환
+- 구문
+CREATE SEQUENCE	시퀀스명
+INCREMENT BY	증감 숫자
+START WITH	시작숫자
+MINVALUE	최소값
+MAXVALUE	최대값
+NOCYCLE	 | CYCLE	
+NOCACHE | CACHE;
+
+시퀀스명.NEXTVAL	:	사용하면 다음 순번값을 가져온다.
+시퀀스명.CURRVAL	:	현재 (순번)값을 확인
+
+DROP SEQUENCE 시퀀스명;
+
+* 파티션테이블
+ : 특정 컬럼을 기준으로 데이터를 분할 저장
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
